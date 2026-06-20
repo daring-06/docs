@@ -1,0 +1,97 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "almond",
+  "name": "openpilot",
+  "description": "openpilot is an open-source driver assistance system by comma.ai. Learn how to set up your comma four, connect to your device, and extend openpilot.",
+  "colors": {
+    "primary": "#9c9c9c",
+    "light": "#3e3d3d",
+    "dark": "#dbdada"
+  },
+  "favicon": "https://icons.duckduckgo.com/ip3/docs.comma.ai.ico",
+  "icons": {
+    "library": "lucide"
+  },
+  "styling": {
+    "eyebrows": "breadcrumbs"
+  },
+  "contextual": {
+    "options": ["copy", "view", "assistant"]
+  },
+  "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Home",
+          "icon": "house",
+          "href": "/"
+        },
+        {
+          "anchor": "comma.ai",
+          "icon": "globe",
+          "href": "https://comma.ai"
+        },
+        {
+          "anchor": "Discord",
+          "icon": "message-circle",
+          "href": "https://discord.comma.ai"
+        }
+      ]
+    },
+    "directory": "card",
+    "groups": [
+      {
+        "group": "Overview",
+        "icon": "info",
+        "expanded": true,
+        "pages": [
+          "introduction",
+          "concepts/glossary",
+          "concepts/safety"
+        ]
+      },
+      {
+        "group": "Device Setup",
+        "icon": "cpu",
+        "expanded": true,
+        "pages": [
+          "how-to/connect-to-device",
+          "concepts/logs"
+        ]
+      },
+      {
+        "group": "Development",
+        "icon": "code",
+        "expanded": true,
+        "pages": [
+          "how-to/dev-environment",
+          "how-to/car-port"
+        ]
+      },
+      {
+        "group": "Community",
+        "icon": "users",
+        "expanded": true,
+        "pages": [
+          "contributing/feedback",
+          "contributing/roadmap"
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [],
+    "primary": {
+      "type": "button",
+      "label": "comma connect",
+      "href": "https://connect.comma.ai"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/comma_ai",
+      "github": "https://github.com/commaai/openpilot",
+      "discord": "https://discord.comma.ai"
+    }
+  }
+}

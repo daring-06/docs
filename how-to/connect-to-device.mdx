@@ -1,0 +1,156 @@
+---
+title: "Connect to Your comma Device via SSH, ADB, or Serial"
+sidebarTitle: "Connect to Device"
+description: "Access your comma four or comma 3X device using SSH with your GitHub keys, ADB over USB or Wi-Fi, or a direct serial console connection."
+---
+
+Your comma device runs a standard Linux operating system, which means you can access it directly using familiar tools — SSH, ADB, or a serial console. Choose the method that best fits your setup: SSH for remote or Wi-Fi access, ADB for USB-based workflows, or the serial console for low-level debugging.
+
+## SSH
+
+SSH is the most convenient way to access your device over a local network or tethered USB connection. openpilot uses your **GitHub account's public SSH keys** for authentication — no separate key management required.
+
+<Steps>
+  <Step title="Add SSH keys to your GitHub account">
+    Your device pulls its authorized keys directly from GitHub. If you haven't already, follow the [GitHub guide for adding SSH keys](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) to associate a public key with your account.
+  </Step>
+  <Step title="Enable SSH on the device">
+    Open **Settings** on your comma device and toggle SSH on.
+  </Step>
+  <Step title="Enter your GitHub username">
+    In the same Settings screen, enter your GitHub username. The device fetches your public keys from `github.com/<username>.keys` at this point.
+  </Step>
+  <Step title="Connect">
+    SSH into the device using your private key. When connected via the device's tethered hotspot, the IP address is `192.168.43.1`:
+
+    ```bash
+    ssh comma@192.168.43.1 -i ~/.ssh/my_github_key
+    ```
+
+    The username is `comma` and the port is `22`.
+  </Step>
+</Steps>
+
+<Tip>
+  When doing active development on the device, use [SSH agent forwarding](https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding) so you can authenticate to GitHub from within the SSH session without copying private keys onto the device.
+</Tip>
+
+<Note>
+  Public keys are only fetched from GitHub once — when you enter your username. If you later add or rotate keys on GitHub, you need to re-enter your GitHub username on the device to pull the updated keys.
+
+  The `id_rsa` key present in the device's default state only works while the device is in the initial setup state (no software installed). It is removed automatically after openpilot is installed.
+</Note>
+
+---
+
+## ADB
+
+Android Debug Bridge (ADB) lets you connect to your device over USB or Wi-Fi. It is useful for pushing files, running commands, or integrating with development toolchains.
+
+The comma device has two USB-C ports on the back. Refer to the port numbering below:
+
+- **Port 1** — data (use this for ADB)
+- **Port 2** — constant power (use this to keep the device powered)
+
+<Steps>
+  <Step title="Power the device">
+    Plug constant power into **port 2** and wait for the device to fully boot.
+  </Step>
+  <Step title="Enable ADB in Settings">
+    Open **Settings** on your device and enable ADB.
+  </Step>
+  <Step title="Connect via USB">
+    Plug your computer into **port 1** (the data port), then open a terminal and run:
+
+    ```bash
+    adb shell
+    ```
+  </Step>
+  <Step title="Connect over Wi-Fi (optional)">
+    While on the same network as your device, you can connect wirelessly. When tethered, use the device's hotspot IP:
+
+    ```bash
+    adb connect 192.168.43.1:5555
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  The default ADB port is **5555**.
+</Note>
+
+For full ADB documentation, see the [Android Debug Bridge reference](https://developer.android.com/tools/adb).
+
+---
+
+## Serial Console
+
+The serial console gives you a direct terminal session at the hardware level, which is useful when the device won't boot or when SSH isn't yet configured.
+
+On the **comma 3X**, the serial console is accessible from the main OBD-C port, forwarded through the panda (the secondary processor that handles safety and CAN communication). Use the `panda/scripts/som_debug.sh` script to open a session.
+
+On the **comma four**, the serial console is exposed through an internal debug connector. Dedicated debug hardware for the comma four is coming soon to the comma shop.
+
+<Note>
+  The default login credentials for the serial console are:
+  - **Username:** `comma`
+  - **Password:** `comma`
+</Note>
+
+---
+
+## ssh.comma.ai Proxy
+
+If you have a **comma prime** subscription, you can SSH into your device from anywhere in the world through the `ssh.comma.ai` proxy — no VPN or port forwarding required.
+
+You'll need your device's **dongle ID**, which is available in [comma connect](https://connect.comma.ai).
+
+### SSH Config (recommended)
+
+Add the following block to your `~/.ssh/config` file. Once in place, you can connect to any of your devices by running `ssh comma-<dongleid>`:
+
+```text
+Host comma-*
+  Port 22
+  User comma
+  IdentityFile ~/.ssh/my_github_key
+  ProxyCommand ssh %h@ssh.comma.ai -W %h:%p
+
+Host ssh.comma.ai
+  Hostname ssh.comma.ai
+  Port 22
+  IdentityFile ~/.ssh/my_github_key
+```
+
+### One-Off Connection
+
+To connect without modifying your SSH config, run the following command directly, replacing `ffffffffffffffff` with your dongle ID:
+
+```bash
+ssh -i ~/.ssh/my_github_key \
+  -o ProxyCommand="ssh -i ~/.ssh/my_github_key -W %h:%p -p %p %h@ssh.comma.ai" \
+  comma@ffffffffffffffff
+```
+
+### Host Key Fingerprint
+
+Verify the `ssh.comma.ai` host key against this known-good fingerprint to protect against man-in-the-middle attacks:
+
+```text
+Host key fingerprint is SHA256:X22GOmfjGb9J04IA2+egtdaJ7vW9Fbtmpz9/x8/W1X4
++---[RSA 4096]----+
+|                 |
+|                 |
+|        .        |
+|         +   o   |
+|        S = + +..|
+|         + @ = .=|
+|        . B @ ++=|
+|         o * B XE|
+|         .o o OB/|
++----[SHA256]-----+
+```
+
+<Warning>
+  The ssh.comma.ai proxy requires an active comma prime subscription. Without it, connection attempts will be refused.
+</Warning>

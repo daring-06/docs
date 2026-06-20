@@ -1,0 +1,79 @@
+---
+title: "How to Port openpilot to Support a New Car or Brand"
+sidebarTitle: "Car Port"
+description: "Understand what a car port is, how brand and model ports differ in scope, and how to build one using the opendbc project structure."
+---
+
+Every car model that openpilot supports requires its own car port — a collection of code that teaches openpilot how to read sensor data from and send control commands to that specific vehicle. The complexity of a port varies depending on how much existing support already exists for the brand, and what APIs and CAN bus architecture the car exposes.
+
+## What is a car port?
+
+A car port enables openpilot support on a particular car. Each car model openpilot supports needs to be individually ported. Two factors that heavily influence the complexity of a port are:
+
+- **Existing support** — whether openpilot already supports other cars on the same platform or from the same brand
+- **Car architecture** — the CAN bus layout, available APIs, and whether the car exposes a radar interface
+
+## Structure of a car port
+
+All car-specific code lives in the [opendbc](https://github.com/commaai/opendbc) project, not in the main openpilot repository. A small residual amount of car-specific logic remains in openpilot for historical reasons and will eventually be migrated.
+
+<Accordion title="opendbc — brand directory">
+
+Each supported brand has a directory at `opendbc/car/[brand]/` containing a standard set of files:
+
+| File | Purpose |
+|---|---|
+| `interface.py` | Defines the `CarInterface` class — the main entry point for the brand |
+| `carstate.py` | Reads CAN messages from the car and builds openpilot `CarState` messages |
+| `carcontroller.py` | Executes openpilot `CarControl` actions by sending commands to the car |
+| `[brand]can.py` | Composes the raw CAN messages that `carcontroller` sends |
+| `values.py` | Actuation limits, general constants, and the list of supported car configurations |
+| `radar_interface.py` | Parses radar point data from the car, if the car exposes a radar interface |
+
+</Accordion>
+
+<Accordion title="opendbc — safety files">
+
+Safety logic and its tests are kept separate from the general car code:
+
+- `opendbc/safety/modes/[brand].h` — Brand-specific safety logic written in C
+- `opendbc/safety/tests/test_[brand].py` — CI tests that verify the safety logic for the brand
+
+</Accordion>
+
+<Accordion title="openpilot — car-specific logic">
+
+For historical reasons, openpilot itself still contains a small amount of brand-specific code. This is expected to be migrated to opendbc or removed over time:
+
+- `selfdrive/car/car_specific.py` — Brand-specific event logic
+
+</Accordion>
+
+## Brand port vs. model port
+
+Not all ports are equal in scope. Understanding the distinction helps you estimate the work involved and find the right reference examples.
+
+<CardGroup cols={2}>
+  <Card title="Brand Port" icon="car-garage">
+    A brand port adds support for a substantially new car brand, or a new platform within a brand. It requires creating all the files in `opendbc/car/[brand]/` from scratch, writing brand-specific safety logic, and adding safety CI tests.
+
+    **Example:** [PR #23331](https://github.com/commaai/openpilot/pull/23331)
+  </Card>
+  <Card title="Model Port" icon="car">
+    A model port adds a new car model within an already-supported brand. Because the brand's CAN bus architecture and APIs are already known, model ports are significantly less work than brand ports.
+
+    **Example:** [PR #30672](https://github.com/commaai/openpilot/pull/30672)
+  </Card>
+</CardGroup>
+
+## Learn from the community
+
+[Jason Young](https://github.com/jyoung8607) gave a detailed talk at COMMA_CON covering the end-to-end car porting process. Watching it before you start is strongly recommended.
+
+<Card title="COMMA_CON: How to Port a Car" icon="youtube" href="https://www.youtube.com/watch?v=XxPS5TpTUnI">
+  Jason Young's walkthrough of the car porting process, presented at COMMA_CON. Available on YouTube.
+</Card>
+
+<Note>
+  The best way to understand a car port is to read through an existing one that covers a car similar to yours. Browse merged pull requests in the [openpilot repository](https://github.com/commaai/openpilot/pulls) and filter by labels like `car port` to find examples.
+</Note>

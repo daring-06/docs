@@ -1,0 +1,52 @@
+---
+title: "openpilot: Open-Source Driver Assistance by comma.ai"
+sidebarTitle: "Introduction"
+description: "openpilot is an open-source driver assistance system by comma.ai offering ACC, ALC, FCW, LDW, and Driver Monitoring on supported vehicles."
+---
+
+openpilot is an open-source driver assistance system built by comma.ai. It runs on the comma four device and works with a growing list of supported car makes, models, and model years to give you smarter, smoother adaptive cruise and lane centering — all with full transparency into how it works under the hood.
+
+## What openpilot does
+
+openpilot performs five core driver assistance functions:
+
+- **Adaptive Cruise Control (ACC)** — Automatically adjusts your vehicle's speed to maintain a safe following distance from the car ahead.
+- **Automated Lane Centering (ALC)** — Steers your vehicle to keep it centered within its lane.
+- **Forward Collision Warning (FCW)** — Alerts you when a potential frontal collision is detected.
+- **Lane Departure Warning (LDW)** — Warns you when the vehicle drifts out of its lane without a turn signal.
+- **Driver Monitoring (DM)** — Uses a cabin-facing camera to detect distraction or drowsiness and alert you to refocus on the road while openpilot is engaged.
+
+<Note>
+  openpilot is a Level 2 driver assistance system. It requires you to remain alert and keep your hands on the wheel at all times. Driver Monitoring helps, but your attention is always the primary safety layer.
+</Note>
+
+## Hardware: the comma four
+
+openpilot is designed to run on the **comma four**, the latest dedicated hardware device from comma.ai. The comma four mounts to your windshield, connects to your car's existing systems, and runs the full openpilot software stack.
+
+For purchasing information, visit [comma.ai/shop/comma-four](https://www.comma.ai/shop/comma-four).
+
+## How it works
+
+openpilot does not bypass or replace your car's built-in systems. Instead, it interfaces with the car's existing APIs for the built-in Advanced Driver Assistance System (ADAS) and provides better acceleration, braking, and steering inputs than the stock system would on its own. The **panda** — the secondary processor embedded in the comma four — handles functional safety and communicates directly with the car over the CAN bus.
+
+This design means openpilot works within the safety envelope your car's manufacturer already established, while extending its capabilities through comma.ai's open-source algorithms.
+
+## Explore the docs
+
+Use the cards below to jump to the sections most relevant to you.
+
+<CardGroup cols={2}>
+  <Card title="Glossary" icon="book-open" href="/concepts/glossary">
+    Look up key openpilot terms like routes, segments, panda, and comma connect.
+  </Card>
+  <Card title="Safety" icon="shield-check" href="/concepts/safety">
+    Understand openpilot's Level 2 safety model, actuator limits, and fork requirements.
+  </Card>
+  <Card title="Connect to Device" icon="plug" href="/how-to/connect-to-device">
+    Learn how to connect to your comma device for development or debugging.
+  </Card>
+  <Card title="Dev Environment" icon="code" href="/how-to/dev-environment">
+    Set up your development environment and start modifying openpilot.
+  </Card>
+</CardGroup>

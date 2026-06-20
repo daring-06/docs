@@ -1,0 +1,121 @@
+---
+title: "How to Set Up an openpilot Development Environment"
+sidebarTitle: "Dev Environment"
+description: "Bootstrap your local openpilot development environment, run the replay tool, make a live UI change, and deploy your fork to a device."
+---
+
+In about 30 minutes you can have a fully working openpilot development environment on your computer, make a live change to the driving UI, and — if you own a comma device — deploy your customized build to your car. This tutorial walks through every step from cloning the repo to seeing your changes in the real world.
+
+<Steps>
+
+### Clone openpilot and install dependencies
+
+Run the bootstrap script to clone openpilot and automatically install all required dependencies:
+
+```bash
+bash <(curl -fsSL openpilot.comma.ai)
+```
+
+Once that completes, navigate into the project directory and activate the Python virtual environment:
+
+```bash
+cd openpilot && source .venv/bin/activate
+```
+
+### Compile openpilot
+
+With the environment active, compile the project using `scons`:
+
+```bash
+scons
+```
+
+<Tip>
+  The first compile takes a few minutes. Subsequent builds are much faster because `scons` only recompiles files that have changed.
+</Tip>
+
+### Run the replay tool
+
+The `replay` tool streams sensor and camera data from a recorded route so you can test UI changes without driving. Open two separate terminals and run:
+
+```bash
+# Terminal 1
+tools/replay/replay --demo
+```
+
+```bash
+# Terminal 2
+./selfdrive/ui/ui.py
+```
+
+The openpilot UI will launch and display a live replay of the built-in demo route.
+
+<Note>
+  If you have a comma device, you can replace `--demo` with one of your own routes from [comma connect](https://connect.comma.ai) to replay your real driving data.
+</Note>
+
+### Find the speed-rendering code
+
+Now make a change to the UI. The current speed is drawn by `_draw_current_speed` inside `selfdrive/ui/onroad/hud_renderer.py`. Use `git grep` to locate it quickly:
+
+```bash
+git grep "_draw_current_speed" selfdrive/ui/onroad/hud_renderer.py
+```
+
+The relevant function looks like this:
+
+```python
+def _draw_current_speed(self, rect: rl.Rectangle) -> None:
+    """Draw the current vehicle speed and unit."""
+    speed_text = str(round(self.speed))
+    speed_text_size = measure_text_cached(self._font_bold, speed_text, FONT_SIZES.current_speed)
+    speed_pos = rl.Vector2(rect.x + rect.width / 2 - speed_text_size.x / 2, 180 - speed_text_size.y / 2)
+    rl.draw_text_ex(self._font_bold, speed_text, speed_pos, FONT_SIZES.current_speed, 0, COLORS.white)  # <- this sets the speed text color
+```
+
+### Change the speed color to blue
+
+Replace `COLORS.white` with an inline `rl.Color` value. A soft blue — `#8080FF` — works well here:
+
+```python
+  rl.draw_text_ex(self._font_bold, speed_text, speed_pos, FONT_SIZES.current_speed, 0, COLORS.white) # [!code --]
+  rl.draw_text_ex(self._font_bold, speed_text, speed_pos, FONT_SIZES.current_speed, 0, rl.Color(0x80, 0x80, 0xFF, 255)) # [!code ++]
+```
+
+### Re-run the UI to see your change
+
+Stop the UI if it is still running, then restart it:
+
+```bash
+./selfdrive/ui/ui.py
+```
+
+With the replay still streaming in the other terminal, the speed readout should now appear in blue.
+
+### Push your fork to GitHub
+
+Go to the [openpilot GitHub repository](https://github.com/commaai/openpilot) and click **Fork**. Then push your changes from the command line:
+
+```bash
+git remote rm origin
+git remote add origin git@github.com:<your-github-username>/openpilot.git
+git add .
+git commit -m "Make the speed display blue"
+git push --set-upstream origin master
+```
+
+### Install your fork on your comma device
+
+Uninstall openpilot through the **Settings** menu on your comma device. Then navigate to the following URL on the device to reinstall from your fork:
+
+```
+installer.comma.ai/<your-github-username>/master
+```
+
+<Warning>
+  Make sure your fork is publicly visible on GitHub before trying to install it. Private repositories cannot be fetched by the installer.
+</Warning>
+
+Your comma device will download and install the build from your fork. Take it for a drive and admire the blue speed display in person.
+
+</Steps>

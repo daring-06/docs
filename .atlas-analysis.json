@@ -1,0 +1,68 @@
+{
+  "projectType": "saas",
+  "projectName": "openpilot by comma.ai",
+  "projectDescription": "openpilot is an open-source driver assistance system that provides Adaptive Cruise Control, Automated Lane Centering, Forward Collision Warning, and Driver Monitoring on supported vehicles via the comma four device.",
+  "theme": "luma",
+  "primaryColor": "#9c9c9c",
+  "lightColor": "#3e3d3d",
+  "darkColor": "#dbdada",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "introduction",
+              "concepts/glossary",
+              "concepts/safety"
+            ]
+          },
+          {
+            "group": "Device Setup",
+            "pages": [
+              "how-to/connect-to-device",
+              "concepts/logs"
+            ]
+          },
+          {
+            "group": "Development",
+            "pages": [
+              "how-to/dev-environment",
+              "how-to/car-port"
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "contributing/feedback",
+              "contributing/roadmap"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Adaptive Cruise Control (ACC)",
+    "Automated Lane Centering (ALC)",
+    "Forward Collision Warning (FCW)",
+    "Lane Departure Warning (LDW)",
+    "Driver Monitoring with distraction and sleep detection",
+    "Route recording and log replay via comma connect",
+    "SSH and ADB access to comma device",
+    "Remote SSH via ssh.comma.ai proxy (comma prime)",
+    "Open-source, forkable and customizable",
+    "Support for a growing list of car makes, models, and years"
+  ],
+  "publicApiSurface": [
+    "connect.comma.ai — route and segment viewer",
+    "ssh.comma.ai — remote SSH proxy for comma prime subscribers",
+    "installer.comma.ai/<username>/<branch> — fork installer URL",
+    "openpilot.comma.ai — development environment bootstrap script",
+    "tools/replay/replay — log replay tool",
+    "selfdrive/ui/ui.py — openpilot UI",
+    "panda/scripts/som_debug.sh — serial console access"
+  ]
+}

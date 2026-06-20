@@ -1,0 +1,71 @@
+---
+title: "openpilot Feedback: Driving, Driver Monitoring, and Bugs"
+sidebarTitle: "Feedback"
+description: "Learn how to submit driving feedback, driver monitoring false positives, and bug reports to the openpilot team using Discord and GitHub."
+---
+
+Feedback is one of the highest-leverage ways you can contribute to openpilot as a user. Whether you notice something off about how your car drives, think driver monitoring is being too aggressive, or run into a software bug, there is a clear path for getting that information to the team.
+
+## Driving Feedback
+
+If you have feedback about how your car drives on openpilot, join the community Discord and submit it through the dedicated channel.
+
+<Steps>
+  <Step title="Join the community Discord">
+    Head to [discord.comma.ai](https://discord.comma.ai) and join the server if you haven't already.
+  </Step>
+  <Step title="Open #submit-feedback">
+    Navigate to the `#submit-feedback` channel and use the form there to post your driving feedback.
+  </Step>
+</Steps>
+
+<Note>
+Before posting, confirm all three prerequisites below are met. Feedback submitted without meeting these conditions is much harder for the team to act on.
+</Note>
+
+<Accordion title="Driving feedback prerequisites">
+- **openpilot is up to date** — you should be on the latest openpilot release or nightly build.
+- **Both road-facing cameras have a clear view** — your windshield and camera lenses should be clean and unobstructed.
+- **Your device is mounted properly** — mount your device horizontally centered and relatively high on the windshield.
+</Accordion>
+
+---
+
+## Driver Monitoring Feedback
+
+If driver monitoring (DM) is flagging you while you are being perfectly attentive, those are likely false positives that the team wants to fix. Driver monitoring feedback is highly actionable — the team can often address your specific complaint within a single release cycle.
+
+<Steps>
+  <Step title="Join the community Discord">
+    Go to [discord.comma.ai](https://discord.comma.ai) and join the server.
+  </Step>
+  <Step title="Enable driver camera recording">
+    If driver camera recording is toggled off in your device settings, temporarily turn it on and drive until you reproduce the issue.
+  </Step>
+  <Step title="Find the relevant segment in comma connect">
+    Open [comma connect](https://connect.comma.ai) and locate the route where the false positive occurred. Identify the specific segment — routes are split into one-minute chunks — then upload that segment's logs and driver camera footage.
+  </Step>
+  <Step title="Post in #openpilot-experience">
+    Share the uploaded segment link in the `#openpilot-experience` channel on Discord. Include a clear description of what happened and why you believe it was a false positive.
+  </Step>
+</Steps>
+
+<Warning>
+You can turn driver camera recording back off after you have reproduced and uploaded the issue. Leaving it enabled indefinitely is not required.
+</Warning>
+
+<Accordion title="Driver monitoring feedback prerequisites">
+- **openpilot is up to date** — you should be on the latest openpilot release or nightly build.
+- **The driver camera has a clear view of the driver** — make sure nothing blocks the camera (e.g. a cable), and that the lens is clean.
+- **Your device is mounted properly** — mount your device horizontally centered and relatively high on the windshield.
+</Accordion>
+
+---
+
+## Other Bugs
+
+Got an issue that doesn't fit into driving or driver monitoring feedback? Open an issue directly on the openpilot GitHub repository.
+
+<Card title="Open a GitHub Issue" icon="github" href="https://github.com/commaai/openpilot/issues/new/choose">
+  Use the issue tracker to report bugs, unexpected behavior, or anything else that doesn't belong in Discord.
+</Card>

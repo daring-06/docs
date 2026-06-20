@@ -1,0 +1,37 @@
+---
+title: "openpilot Glossary: Terms and Definitions for New Users"
+sidebarTitle: "Glossary"
+description: "Definitions for key openpilot terms: routes, segments, panda, comma connect, and the comma four device — everything you need to read the docs."
+---
+
+When you work with openpilot — whether you're reviewing your drives, building a fork, or digging into the hardware — you'll run into a consistent set of terms across the documentation, source code, and community. This glossary defines each of those terms so you always know exactly what you're reading.
+
+## Terms
+
+<Accordion title="onroad">
+  **onroad** is openpilot's system state while the vehicle's ignition is on. When the system is onroad, openpilot is actively running and available to engage for driver assistance.
+</Accordion>
+
+<Accordion title="offroad">
+  **offroad** is openpilot's system state while the vehicle's ignition is off. In this state, openpilot is not actively controlling the vehicle, though background processes such as software updates may still run.
+</Accordion>
+
+<Accordion title="route">
+  A **route** is a recording of a single onroad session — from the moment you start driving to the moment you stop. Routes are stored on the device and synced to comma connect, where you can replay and review them.
+</Accordion>
+
+<Accordion title="segment">
+  Routes are split into one-minute chunks called **segments**. Segmenting makes large drives easier to upload, seek through, and analyze without loading an entire route at once.
+</Accordion>
+
+<Accordion title="comma connect">
+  **comma connect** is the web viewer for all your routes. You can view, replay, and share your drives at [connect.comma.ai](https://connect.comma.ai).
+</Accordion>
+
+<Accordion title="panda">
+  The **panda** is the secondary processor on the comma four device. It implements the functional safety model and communicates directly with the car over the CAN bus. You can explore the panda firmware and safety model in the [panda GitHub repository](https://github.com/commaai/panda).
+</Accordion>
+
+<Accordion title="comma four">
+  The **comma four** is the latest hardware device by comma.ai for running openpilot. It mounts to your windshield and includes the cameras, processors, and connectivity needed for the full openpilot experience. More information is available at [comma.ai/shop/comma-four](https://www.comma.ai/shop/comma-four).
+</Accordion>

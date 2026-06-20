@@ -1,0 +1,84 @@
+---
+title: "openpilot Drive Logs: Routes, Segments, and Log Types"
+sidebarTitle: "Logs"
+description: "openpilot records every drive as routes split into one-minute segments. Learn about rlogs, qlogs, camera files, and how to replay them."
+---
+
+Every time you drive with openpilot engaged, your comma device records a detailed log of everything that happened — sensor data, inter-process messages, and video from every camera. Understanding how these logs are structured helps you replay drives, debug issues, and analyze your drives in detail.
+
+## Routes and Segments
+
+A **route** is a single onroad recording session. It begins on the rising edge of the ignition signal and ends on the falling edge. Routes are split into **one-minute chunks called segments**, which makes them easier to upload and process incrementally.
+
+Each segment contains several distinct file types that together capture a complete picture of what openpilot saw and did during that minute.
+
+---
+
+## Log File Types
+
+<CardGroup cols={2}>
+  <Card title="rlog.zst" icon="database">
+    The full inter-process message log, zstd-compressed Cap'n Proto data.
+  </Card>
+  <Card title="Camera files (.hevc)" icon="video">
+    H.265-encoded streams from the road, wide, and driver cameras.
+  </Card>
+  <Card title="qlog.zst" icon="filter">
+    A decimated subset of the rlog, small enough for fast upload.
+  </Card>
+  <Card title="qcamera.ts" icon="film">
+    A lower-resolution H.264 road camera stream for quick preview.
+  </Card>
+</CardGroup>
+
+### rlog.zst
+
+The `rlog.zst` is the most detailed log file openpilot produces. It contains **all messages exchanged between openpilot's processes** during a segment — everything from sensor readings and model outputs to actuator commands and driver monitoring scores.
+
+The messages are serialized using [Cap'n Proto](https://capnproto.org/) and compressed with [zstd](https://github.com/facebook/zstd), resulting in the `.zst` extension. You can find the full list of logged services in [`cereal/services.py`](https://github.com/commaai/openpilot/blob/master/cereal/services.py) in the openpilot repository.
+
+<Tip>
+  Use openpilot's [Python log reader](https://github.com/commaai/openpilot/blob/master/tools/lib/logreader.py) to iterate over rlog messages programmatically. The library handles decompression and deserialization for you.
+</Tip>
+
+### Camera Files
+
+openpilot records video from three cameras simultaneously. Each stream is encoded independently as H.265 (HEVC) and written to its own file per segment:
+
+<Accordion title="fcamera.hevc — Road Camera">
+  The forward-facing road camera. This is the primary camera openpilot uses for lane detection and lead car tracking.
+</Accordion>
+
+<Accordion title="ecamera.hevc — Wide Road Camera">
+  The wide-angle road camera, which provides a broader field of view than the standard road camera.
+</Accordion>
+
+<Accordion title="dcamera.hevc — Driver Camera">
+  The inward-facing driver monitoring camera. This stream is used by openpilot's driver monitoring system to detect distraction and drowsiness.
+</Accordion>
+
+### qlog.zst and qcamera.ts
+
+qlogs and qcameras are **lightweight counterparts** to the full rlog and fcamera files. They are designed to be small enough to upload immediately even on a slow mobile connection, while still being useful for most analysis and debugging tasks.
+
+- **`qlog.zst`** — a decimated subset of the rlog, containing a sampled selection of messages from each service. See [`cereal/services.py`](https://github.com/commaai/cereal/blob/master/services.py) for the per-service decimation rates.
+- **`qcamera.ts`** — a lower-resolution, H.264-encoded version of the road camera (`fcamera.hevc`). This is the video stream displayed in [comma connect](https://connect.comma.ai/).
+
+<Note>
+  The video you see when reviewing a drive on comma connect is sourced from `qcamera.ts`, not the full-resolution `fcamera.hevc`. For full-resolution playback, use the local replay tool.
+</Note>
+
+---
+
+## Viewing and Replaying Logs
+
+<CardGroup cols={2}>
+  <Card title="comma connect" icon="monitor" href="https://connect.comma.ai">
+    View your routes, watch qcamera video, and browse route metadata from any browser. Requires a comma account.
+  </Card>
+  <Card title="Replay Tool" icon="play" href="https://github.com/commaai/openpilot/tree/master/tools/replay">
+    Run drives back locally with full rlog fidelity. Supports scrubbing through any route using the same tooling used to develop openpilot.
+  </Card>
+</CardGroup>
+
+The replay tool and the broader suite of openpilot development tools are available in the [`tools/`](https://github.com/commaai/openpilot/tree/master/tools) directory of the openpilot repository.

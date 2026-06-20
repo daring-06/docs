@@ -1,0 +1,64 @@
+---
+title: "openpilot Safety Model: Requirements and Fork Guidelines"
+sidebarTitle: "Safety"
+description: "openpilot is a Level 2 driver assistance system. Learn its safety requirements, actuator limits, and guidelines for openpilot forks."
+---
+
+openpilot is a Level 2 driver assistance system — which means it can handle acceleration, braking, and steering simultaneously, but it always requires you, the driver, to stay alert and pay attention. Understanding the safety model helps you use openpilot responsibly and, if you're building a fork, ensures you maintain the protections users depend on.
+
+## openpilot as a passive failsafe system
+
+Like other Adaptive Cruise Control (ACC) and Automated Lane Centering (ALC) systems, openpilot is a **failsafe passive system**. It is not a self-driving system. You must remain alert and attentive at all times while openpilot is engaged.
+
+<Warning>
+  Driver alertness is necessary, but not sufficient, for openpilot to be used safely. openpilot is provided with no warranty of fitness for any purpose.
+</Warning>
+
+## Driver Monitoring
+
+To help you stay focused, openpilot includes a **Driver Monitoring (DM)** feature. While openpilot is engaged, the cabin-facing camera monitors for signs of distraction or drowsiness and issues alerts to prompt you to re-engage with the road.
+
+Driver Monitoring is a support tool — it is not a substitute for your own attention.
+
+## Core safety requirements
+
+Following Hazard and Risk Analysis and FMEA, openpilot is designed around two fundamental safety requirements:
+
+<Steps>
+  <Step title="Driver retake control">
+    You must always be capable of immediately retaking manual control of the vehicle — by stepping on the brake pedal or pressing the cancel button.
+  </Step>
+  <Step title="Trajectory change limits">
+    The vehicle must not alter its trajectory too quickly for you to safely react. While the system is engaged, actuators are constrained to operate within reasonable limits. These lateral limits follow ISO 11270 and ISO 15622, and translate to a maximum of 0.9 seconds of actuation to achieve a 1-meter lateral deviation.
+  </Step>
+</Steps>
+
+## Standards compliance
+
+openpilot is developed in good faith to comply with the following standards and guidelines:
+
+| Standard | Scope |
+|---|---|
+| **FMVSS** | U.S. Federal Motor Vehicle Safety Standards compliance |
+| **ISO 26262** | Functional safety for road vehicles, including NHTSA guidance on ALC systems |
+| **ISO 11270** | Lane-keeping assistance systems — lateral actuation limits |
+| **ISO 15622** | Adaptive cruise control systems — longitudinal actuation limits |
+| **MISRA C:2012** | Strict C coding guidelines applied to all safety-relevant code |
+
+In addition to static analysis, comma.ai performs software-in-the-loop, hardware-in-the-loop, and in-vehicle tests before each software release.
+
+For additional implementation details, see the [panda safety model](https://github.com/commaai/panda#safety-model) and the [opendbc safety directory](https://github.com/commaai/opendbc/tree/master/opendbc/safety/safety).
+
+## Guidelines for openpilot forks
+
+If you are building a fork of openpilot, you are responsible for preserving the safety properties that protect your users. Follow these requirements:
+
+<Warning>
+  Failure to comply with these standards will result in you and your users being banned from comma.ai servers. comma.ai strongly discourages the use of openpilot forks with safety code that is missing or does not fully meet the requirements below.
+</Warning>
+
+- **Do not** disable or nerf [Driver Monitoring](https://github.com/commaai/openpilot/tree/master/selfdrive/monitoring).
+- **Do not** disable or nerf [excessive actuation checks](https://github.com/commaai/openpilot/tree/master/selfdrive/selfdrived/helpers.py).
+- If your fork modifies any code in `opendbc/safety/`:
+  - Your fork cannot use the openpilot trademark.
+  - Your fork must preserve the full [safety test suite](https://github.com/commaai/opendbc/tree/master/opendbc/safety/tests), and all tests must pass — including any new coverage required by your changes.
