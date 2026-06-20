@@ -51,6 +51,14 @@
         ]
       },
       {
+        "group": "Driving",
+        "icon": "car",
+        "expanded": true,
+        "pages": [
+          "how-to/always-on-lateral"
+        ]
+      },
+      {
         "group": "Device Setup",
         "icon": "cpu",
         "expanded": true,

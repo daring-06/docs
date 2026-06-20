@@ -33,6 +33,12 @@ Following Hazard and Risk Analysis and FMEA, openpilot is designed around two fu
   </Step>
 </Steps>
 
+## Lateral and longitudinal control
+
+openpilot's steering (**lateral control**) and speed (**longitudinal control**) are governed independently. They are normally engaged together, but with [Always-On Lateral](/how-to/always-on-lateral) you can engage lane centering on its own while you control the gas and brake yourself.
+
+The safety requirements above apply the same way in either mode. Whenever steering is engaged, you can immediately retake control by turning the wheel, and lateral actuation stays within the ISO 11270 and ISO 15622 limits. Always-On Lateral changes only *when* steering is permitted — it does not relax any actuator limit, and it keeps Driver Monitoring active whenever lane centering is on.
+
 ## Standards compliance
 
 openpilot is developed in good faith to comply with the following standards and guidelines:

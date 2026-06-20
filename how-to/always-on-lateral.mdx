@@ -1,0 +1,64 @@
+---
+title: "Always-On Lateral: Use Lane Centering Without Cruise Control"
+sidebarTitle: "Always-On Lateral"
+description: "Engage openpilot lane centering (steering) on its own, independent of cruise control. Learn how to enable Always-On Lateral, engage it with the LFA button, and the safety limits that still apply."
+---
+
+By default, openpilot engages steering and cruise control together — you turn the whole system on at once. **Always-On Lateral** lets you engage just the lane centering (steering) on its own, while you control the gas and brake yourself.
+
+This is useful when you want openpilot to keep the car centered in the lane but prefer to manage your own speed — for example in stop-and-go traffic, on roads where you don't want adaptive cruise, or any time you'd rather keep your foot on the pedals.
+
+<Warning>
+  Always-On Lateral is a Level 2 driver assistance feature. openpilot controls steering only — **you** are responsible for speed and for stopping. You must stay alert and keep your hands ready on the wheel at all times. Driver Monitoring stays fully active whenever lane centering is engaged.
+</Warning>
+
+## How it works
+
+When Always-On Lateral is enabled, lane centering has its own engagement that is independent of cruise control:
+
+- **You control speed.** openpilot steers; you operate the gas and brake. Braking and slowing down do **not** disengage steering.
+- **A dedicated button toggles steering.** Press the **LFA/LKAS** button on your steering wheel to turn lane centering on or off.
+- **Engaging cruise still works as before.** If you engage full openpilot (cruise + steering), lane centering comes on too, exactly like stock.
+
+## Enable Always-On Lateral
+
+<Steps>
+  <Step title="Open Settings on your device">
+    From the openpilot home screen, open **Settings** and go to the toggles list.
+  </Step>
+  <Step title="Turn on Always-On Lateral">
+    Enable the **Always-On Lateral (Lane Centering Only)** toggle.
+  </Step>
+  <Step title="Let openpilot restart">
+    This setting changes how the device talks to the panda, so openpilot restarts the next time the car is powered on. Wait for it to come back onroad before driving.
+  </Step>
+</Steps>
+
+<Note>
+  The toggle only appears on supported cars (see [Supported cars](#supported-cars)). On unsupported cars it is hidden and has no effect.
+</Note>
+
+## Engage and disengage
+
+Once Always-On Lateral is enabled, use the **LFA/LKAS** button to control lane centering on its own:
+
+| Action | Result |
+|---|---|
+| Press **LFA/LKAS** while steering is off | openpilot engages lane centering |
+| Press **LFA/LKAS** while steering is on | openpilot disengages lane centering |
+| Turn the wheel | Steering **pauses** while you steer, then resumes when you let go |
+| Press the brake / cancel cruise | Speed control disengages, but **lane centering stays on** |
+
+Lane centering also disengages automatically on a steering fault, a calibration or system fault, or when you shift into reverse.
+
+## Safety limits still apply
+
+Always-On Lateral does not change openpilot's safety envelope. Steering is only permitted while the car's main cruise system is switched on, and every steering command stays within the same torque, rate, and lateral-jerk limits defined by the [safety model](/concepts/safety) (ISO 11270 and ISO 15622). You can always override by turning the wheel, and the panda blocks any command outside those limits.
+
+<Warning>
+  Always-On Lateral modifies code in `opendbc/safety/`. If you run or build a fork that includes it, the [fork guidelines](/concepts/safety#guidelines-for-openpilot-forks) apply — you must preserve the full safety test suite and all actuation limits, and the fork cannot use the openpilot trademark.
+</Warning>
+
+## Supported cars
+
+Always-On Lateral is currently available on supported **Hyundai and Kia** vehicles, which expose an LFA button and an ACC main-on signal that openpilot uses to gate steering. Support for other brands and for CAN-FD Hyundai/Kia platforms is in progress.

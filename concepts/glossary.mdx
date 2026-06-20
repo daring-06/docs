@@ -16,6 +16,18 @@ When you work with openpilot — whether you're reviewing your drives, building 
   **offroad** is openpilot's system state while the vehicle's ignition is off. In this state, openpilot is not actively controlling the vehicle, though background processes such as software updates may still run.
 </Accordion>
 
+<Accordion title="lateral control">
+  **lateral control** is openpilot's control of **steering** — keeping the car centered in its lane, also called lane centering. It is one half of openpilot's driving controls; the other is longitudinal control.
+</Accordion>
+
+<Accordion title="longitudinal control">
+  **longitudinal control** is openpilot's control of **speed** — the gas and brake, similar to adaptive cruise control (ACC). It is one half of openpilot's driving controls; the other is lateral control.
+</Accordion>
+
+<Accordion title="Always-On Lateral">
+  **Always-On Lateral** lets you engage lateral control (lane centering) on its own, independent of longitudinal control. With it enabled, openpilot steers while you control the gas and brake yourself. See [Always-On Lateral](/how-to/always-on-lateral).
+</Accordion>
+
 <Accordion title="route">
   A **route** is a recording of a single onroad session — from the moment you start driving to the moment you stop. Routes are stored on the device and synced to comma connect, where you can replay and review them.
 </Accordion>
